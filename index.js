@@ -15,8 +15,8 @@ client.on('ready', () => {
   messageIntervals.forEach(interval => clearInterval(interval));
   messageIntervals = [];
 
-  const intervalId = setInterval(() => {
-    config.channels.forEach(channelId => {
+  config.channels.forEach((channelId, index) => {
+    const intervalId = setInterval(() => {
       client.channels.fetch(channelId)
         .then(channel => {
           channel.send(config.message)
@@ -33,29 +33,31 @@ client.on('ready', () => {
           const now = new Date().toLocaleString('en-US');
           console.error(`[${now}] ✗ Channel not found (${channelId}): ${err.message}`);
         });
-    });
-  }, config.interval);
+    }, config.interval + (index * 30000));
 
-  messageIntervals.push(intervalId);
+    messageIntervals.push(intervalId);
+  });
 
   console.log('→ Sending initial messages...\n');
-  config.channels.forEach(channelId => {
-    client.channels.fetch(channelId)
-      .then(channel => {
-        channel.send(config.message)
-          .then(() => {
-            const now = new Date().toLocaleString('en-US');
-            console.log(`[${now}] ✓ ${channel.name} (${channel.guild.name})`);
-          })
-          .catch(err => {
-            const now = new Date().toLocaleString('en-US');
-            console.error(`[${now}] ✗ Failed to send message: ${err.message}`);
-          });
-      })
-      .catch(err => {
-        const now = new Date().toLocaleString('en-US');
-        console.error(`[${now}] ✗ Channel not found (${channelId}): ${err.message}`);
-      });
+  config.channels.forEach((channelId, index) => {
+    setTimeout(() => {
+      client.channels.fetch(channelId)
+        .then(channel => {
+          channel.send(config.message)
+            .then(() => {
+              const now = new Date().toLocaleString('en-US');
+              console.log(`[${now}] ✓ ${channel.name} (${channel.guild.name})`);
+            })
+            .catch(err => {
+              const now = new Date().toLocaleString('en-US');
+              console.error(`[${now}] ✗ Failed to send message: ${err.message}`);
+            });
+        })
+        .catch(err => {
+          const now = new Date().toLocaleString('en-US');
+          console.error(`[${now}] ✗ Channel not found (${channelId}): ${err.message}`);
+        });
+    }, index * 30000);
   });
 });
 
