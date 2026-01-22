@@ -33,7 +33,7 @@ client.on('ready', () => {
           const now = new Date().toLocaleString('en-US');
           console.error(`[${now}] ✗ Channel not found (${channelId}): ${err.message}`);
         });
-    }, config.interval);
+    }, config.interval + (index * 10000));
 
     messageIntervals.push(intervalId);
   });
@@ -57,7 +57,7 @@ client.on('ready', () => {
           const now = new Date().toLocaleString('en-US');
           console.error(`[${now}] ✗ Channel not found (${channelId}): ${err.message}`);
         });
-    }, index * 30000);
+    }, index * 10000);
   });
 });
 
