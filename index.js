@@ -33,7 +33,7 @@ client.on('ready', () => {
           const now = new Date().toLocaleString('en-US');
           console.error(`[${now}] ✗ Channel not found (${channelId}): ${err.message}`);
         });
-    }, config.interval + (index * 30000));
+    }, config.interval);
 
     messageIntervals.push(intervalId);
   });
