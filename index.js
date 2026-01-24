@@ -23,6 +23,9 @@ client.on('ready', () => {
             .then(() => {
               const now = new Date().toLocaleString('en-US');
               console.log(`[${now}] ✓ ${channel.name} (${channel.guild.name})`);
+              if (index === config.channels.length - 1) {
+                console.log('-----------------------------');
+              }
             })
             .catch(err => {
               const now = new Date().toLocaleString('en-US');
@@ -47,6 +50,9 @@ client.on('ready', () => {
             .then(() => {
               const now = new Date().toLocaleString('en-US');
               console.log(`[${now}] ✓ ${channel.name} (${channel.guild.name})`);
+              if (index === config.channels.length - 1) {
+                console.log('-----------------------------');
+              }
             })
             .catch(err => {
               const now = new Date().toLocaleString('en-US');
