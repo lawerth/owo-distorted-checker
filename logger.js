@@ -168,7 +168,7 @@ class Logger {
 
   reconnecting(event) {
     const tag = colors.warn(pad('RECONN'));
-    console.log(`  ${getTimestamp()}  ${tag}  ${this.prefix}${symbols.warn} ${colors.yellow(event || 'Attempting to reconnect...')}`);
+    console.log(`  ${getTimestamp()}  ${tag}  ${this.prefix}${symbols.warn} ${colors.warn(event || 'Attempting to reconnect...')}`);
   }
 
   // Private helpers
