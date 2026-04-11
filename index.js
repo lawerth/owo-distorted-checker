@@ -4,6 +4,8 @@ const config = require('./config.json');
 const { Logger } = require('./logger');
 dotenv.config();
 
+console.clear();
+
 const log = new Logger('Bot');
 const pkg = require('./package.json');
 const client = new Client();
