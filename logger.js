@@ -143,7 +143,7 @@ class Logger {
 
   ready(details) {
     const tag = colors.success(pad('READY'));
-    console.log(`  ${getTimestamp()}  ${tag}  ${this.prefix}${chalk.bold.green('Bot is online and ready')}`);
+    console.log(`  ${getTimestamp()}  ${tag}  ${this.prefix}${chalk.bold.green('Selfbot is online and ready')}`);
     if (details) {
       for (const [key, value] of Object.entries(details)) {
         console.log(`             ${symbols.block}  ${colors.muted(key)}  ${symbols.arrow}  ${colors.highlight(String(value))}`);

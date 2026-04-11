@@ -30,7 +30,7 @@ DISCORD_TOKEN=your_token_here
 }
 ```
 
-3. **Start the bot**:
+3. **Start the selfbot**:
 ```bash
 npm start
 ```

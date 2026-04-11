@@ -6,7 +6,7 @@ dotenv.config();
 
 console.clear();
 
-const log = new Logger('Bot');
+const log = new Logger('Selfbot');
 const pkg = require('./package.json');
 const client = new Client();
 let messageIntervals = [];
