@@ -10,10 +10,10 @@ const colors = {
   error: chalk.red,
   debug: chalk.magenta,
   dim: chalk.dim,
-  accent: chalk.hex('#A78BFA'),  // Soft purple
-  highlight: chalk.hex('#60A5FA'),  // Soft blue
-  muted: chalk.hex('#6B7280'),  // Gray-500
-  divider: chalk.hex('#374151'),  // Gray-700
+  accent: chalk.hex('#A78BFA'),
+  highlight: chalk.hex('#60A5FA'),
+  muted: chalk.hex('#6B7280'),
+  divider: chalk.hex('#374151'),
 };
 
 // Symbols
