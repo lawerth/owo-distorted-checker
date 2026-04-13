@@ -9,25 +9,49 @@ console.clear();
 const log = new Logger('Selfbot');
 const pkg = require('./package.json');
 const client = new Client();
-let messageIntervals = [];
+let isRunning = true;
+let currentTimeout = null;
 
-function sendToChannel(channelId, index, total) {
-  return client.channels.fetch(channelId)
-    .then(channel => {
-      return channel.send(config.message)
-        .then(() => {
-          log.cycle(index, total, `${channel.name} ${log._counters.total > 0 ? '' : ''}(${channel.guild.name})`);
-          if (index === total - 1) {
-            log.cycleDone(total);
-          }
-        })
-        .catch(err => {
-          log.error(`Failed to send → ${channelId}: ${err.message}`);
-        });
-    })
-    .catch(err => {
-      log.error(`Channel not found → ${channelId}: ${err.message}`);
-    });
+const sleep = (ms) => new Promise(r => { currentTimeout = setTimeout(r, ms); });
+
+async function sendToChannel(channelId, index, total) {
+  let channel;
+  try {
+    channel = await client.channels.fetch(channelId);
+  } catch (err) {
+    log.error(`Channel not found → ${channelId}: ${err.message}`);
+    return;
+  }
+
+  try {
+    await channel.send(config.message);
+    log.cycle(index, total, `${channel.name} ${log._counters.total > 0 ? '' : ''}(${channel.guild.name})`);
+  } catch (err) {
+    log.error(`Failed to send → ${channelId}: ${err.message}`);
+  }
+}
+
+async function startMessageCycles() {
+  log.info('Sending initial messages...');
+  log.blank();
+
+  while (isRunning) {
+    for (let i = 0; i < config.channels.length; i++) {
+      if (!isRunning) return;
+      await sendToChannel(config.channels[i], i, config.channels.length);
+
+      if (i < config.channels.length - 1 && isRunning) {
+        await sleep(10000);
+      }
+    }
+
+    if (!isRunning) return;
+    log.cycleDone(config.channels.length);
+
+    if (isRunning) {
+      await sleep(config.interval);
+    }
+  }
 }
 
 client.on('ready', () => {
@@ -40,25 +64,7 @@ client.on('ready', () => {
     'Interval': `${config.interval / 60000} minutes`,
   });
 
-  messageIntervals.forEach(interval => clearInterval(interval));
-  messageIntervals = [];
-
-  config.channels.forEach((channelId, index) => {
-    const intervalId = setInterval(() => {
-      sendToChannel(channelId, index, config.channels.length);
-    }, config.interval + (index * 10000));
-
-    messageIntervals.push(intervalId);
-  });
-
-  log.info('Sending initial messages...');
-  log.blank();
-
-  config.channels.forEach((channelId, index) => {
-    setTimeout(() => {
-      sendToChannel(channelId, index, config.channels.length);
-    }, index * 10000);
-  });
+  startMessageCycles();
 });
 
 client.on('shardDisconnect', () => {
@@ -79,7 +85,8 @@ process.on('unhandledRejection', error => {
 
 process.on('SIGINT', () => {
   log.shutdown('SIGINT received');
-  messageIntervals.forEach(interval => clearInterval(interval));
+  isRunning = false;
+  if (currentTimeout) clearTimeout(currentTimeout);
   client.destroy();
   process.exit(0);
 });
